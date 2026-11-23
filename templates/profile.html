@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-page">
+
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="{{ 'auth-success' if category == 'success' else 'auth-error' }}">{{ message }}</div>
+    {% endfor %}
+
+    <section id="user-info" class="profile-card user-card">
+        <div class="avatar" aria-hidden="true">{{ user.initials }}</div>
+        <div class="user-details">
+            <h1 class="user-name">{{ user.name }}</h1>
+            <p class="user-email">{{ user.email }}</p>
+            <p class="user-since">Member since {{ user.member_since }}</p>
+        </div>
+    </section>
+
+    <section id="filter-bar" class="filter-bar" aria-label="Date filter">
+        <div class="filter-presets">
+            {% for preset in presets %}
+            <a href="{{ url_for('profile', date_from=preset.date_from, date_to=preset.date_to) }}"
+               class="filter-link{% if active_filter == preset.key %} is-active{% endif %}"
+               {% if active_filter == preset.key %}aria-current="true"{% endif %}>{{ preset.label }}</a>
+            {% endfor %}
+        </div>
+        <form method="get" action="{{ url_for('profile') }}"
+              class="filter-custom{% if active_filter == 'custom' %} is-active{% endif %}">
+            <label class="filter-field" for="date_from">
+                <span class="filter-field-label">From</span>
+                <input type="date" id="date_from" name="date_from" class="filter-date"
+                       value="{{ filter_from }}" required>
+            </label>
+            <label class="filter-field" for="date_to">
+                <span class="filter-field-label">To</span>
+                <input type="date" id="date_to" name="date_to" class="filter-date"
+                       value="{{ filter_to }}" required>
+            </label>
+            <button type="submit" class="filter-apply">Apply</button>
+        </form>
+    </section>
+
+    <section id="summary-stats" class="stats-row" aria-label="Summary">
+        <div class="stat-card">
+            <p class="stat-label">Total spent</p>
+            <p class="stat-value">{{ stats.total_spent|inr }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Transactions</p>
+            <p class="stat-value">{{ stats.transaction_count }}</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Top category</p>
+            <p class="stat-value">{{ stats.top_category }}</p>
+        </div>
+    </section>
+
+    <section id="transactions" class="profile-card">
+        <div class="section-head">
+            <h2 class="section-title">Transaction history</h2>
+            <a href="{{ url_for('add_expense') }}" class="btn-add">Add Expense</a>
+        </div>
+        <div class="table-wrap">
+            <table class="tx-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th class="tx-amount">Amount</th>
+                        <th class="tx-actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tx in expenses %}
+                    <tr>
+                        <td>{{ tx.date|short_date }}</td>
+                        <td>{{ tx.description or "" }}</td>
+                        <td><span class="badge badge-{{ tx.category|lower }}">{{ tx.category }}</span></td>
+                        <td class="tx-amount">{{ tx.amount|inr }}</td>
+                        <td class="tx-actions">
+                            <a href="{{ url_for('edit_expense', id=tx.id) }}" class="btn-edit">Edit</a>
+                            <form method="post" action="{{ url_for('delete_expense', id=tx.id) }}"
+                                  style="display:inline"
+                                  onsubmit="return confirm('Delete this expense?')">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="category-breakdown" class="profile-card">
+        <h2 class="section-title">Spending by category</h2>
+        <ul class="breakdown-list">
+            {% for c in breakdown %}
+            <li class="breakdown-row">
+                <span class="breakdown-name">{{ c.name }}</span>
+                <progress class="bar bar-{{ c.name|lower }}" value="{{ c.pct }}" max="100">{{ c.pct }}%</progress>
+                <span class="breakdown-amount">{{ c.amount|inr }}</span>
+                <span class="breakdown-pct">{{ c.pct }}%</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+
+</div>
+
+{% endblock %}

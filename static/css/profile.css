@@ -1,0 +1,397 @@
+/* ------------------------------------------------------------------ */
+/* Category colours. The only place hex values are written in this    */
+/* file. Every rule below uses these variables.                       */
+/* ------------------------------------------------------------------ */
+
+:root {
+    --cat-food: #b45309;
+    --cat-food-bg: #fef3c7;
+    --cat-transport: #1d4ed8;
+    --cat-transport-bg: #dbeafe;
+    --cat-bills: #b91c1c;
+    --cat-bills-bg: #fee2e2;
+    --cat-health: #047857;
+    --cat-health-bg: #d1fae5;
+    --cat-entertainment: #6d28d9;
+    --cat-entertainment-bg: #ede9fe;
+    --cat-shopping: #be185d;
+    --cat-shopping-bg: #fce7f3;
+    --cat-other: #475569;
+    --cat-other-bg: #e2e8f0;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page layout                                                         */
+/* ------------------------------------------------------------------ */
+
+.profile-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+.profile-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 400;
+    margin-bottom: 1.25rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* 1. User info card                                                   */
+/* ------------------------------------------------------------------ */
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.avatar {
+    flex: 0 0 auto;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.03em;
+}
+
+.user-name {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.user-email { color: var(--ink-muted); }
+
+.user-since {
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. Summary stats                                                    */
+/* ------------------------------------------------------------------ */
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.5rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.stat-value {
+    margin-top: 0.35rem;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    line-height: 1.2;
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. Transaction history                                              */
+/* ------------------------------------------------------------------ */
+
+.table-wrap { overflow-x: auto; }
+
+.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.tx-table th {
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 0.75rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.tx-table td {
+    padding: 0.85rem 0.75rem;
+    border-bottom: 1px solid var(--border-soft);
+    white-space: nowrap;
+}
+
+.tx-table tbody tr:last-child td { border-bottom: 0; }
+
+.tx-table .tx-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 500;
+}
+
+.badge-food { color: var(--cat-food); background: var(--cat-food-bg); }
+.badge-transport { color: var(--cat-transport); background: var(--cat-transport-bg); }
+.badge-bills { color: var(--cat-bills); background: var(--cat-bills-bg); }
+.badge-health { color: var(--cat-health); background: var(--cat-health-bg); }
+.badge-entertainment { color: var(--cat-entertainment); background: var(--cat-entertainment-bg); }
+.badge-shopping { color: var(--cat-shopping); background: var(--cat-shopping-bg); }
+.badge-other { color: var(--cat-other); background: var(--cat-other-bg); }
+
+/* ------------------------------------------------------------------ */
+/* 4. Category breakdown                                               */
+/* ------------------------------------------------------------------ */
+
+.breakdown-list {
+    list-style: none;
+    display: grid;
+    gap: 0.9rem;
+}
+
+.breakdown-row {
+    display: grid;
+    grid-template-columns: 8rem 1fr 6.5rem 3rem;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+}
+
+.breakdown-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.breakdown-pct {
+    text-align: right;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Native <progress>: the colour comes from --bar-color, set per category. */
+.bar {
+    --bar-color: var(--ink-muted);
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: 0.6rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.bar::-webkit-progress-bar { background: var(--border); border-radius: 999px; }
+.bar::-webkit-progress-value { background: var(--bar-color); border-radius: 999px; }
+.bar::-moz-progress-bar { background: var(--bar-color); border-radius: 999px; }
+
+.bar-food { --bar-color: var(--cat-food); }
+.bar-transport { --bar-color: var(--cat-transport); }
+.bar-bills { --bar-color: var(--cat-bills); }
+.bar-health { --bar-color: var(--cat-health); }
+.bar-entertainment { --bar-color: var(--cat-entertainment); }
+.bar-shopping { --bar-color: var(--cat-shopping); }
+.bar-other { --bar-color: var(--cat-other); }
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+    .profile-page { padding: 1.5rem 1rem 3rem; }
+    .stats-row { grid-template-columns: 1fr; }
+    .user-card { flex-direction: column; text-align: center; }
+    .breakdown-row { grid-template-columns: 1fr 5rem 2.5rem; }
+    .breakdown-row .bar { grid-column: 1 / -1; order: 3; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Date filter bar                                                     */
+/* ------------------------------------------------------------------ */
+
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.25rem;
+}
+
+.filter-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-link {
+    padding: 0.4rem 0.95rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.filter-link:hover {
+    color: var(--ink);
+    border-color: var(--ink-faint);
+}
+
+.filter-link.is-active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+}
+
+.filter-custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+}
+
+.filter-custom.is-active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+}
+
+.filter-field {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.filter-field-label {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.filter-date {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--ink);
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.4rem 0.6rem;
+}
+
+.filter-date:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.filter-apply {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--paper);
+    background: var(--ink);
+    border: 0;
+    border-radius: var(--radius-sm);
+    padding: 0.5rem 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.filter-apply:hover { background: var(--accent); }
+
+@media (max-width: 700px) {
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .filter-custom { justify-content: space-between; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Transaction history header and the Add Expense button               */
+/* ------------------------------------------------------------------ */
+
+.section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.section-head .section-title { margin-bottom: 0; }
+
+.btn-add {
+    padding: 0.45rem 1.1rem;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-add:hover { background: var(--accent); }
+
+/* ------------------------------------------------------------------ */
+/* Actions column (Edit link; Delete joins it in a later step)         */
+/* ------------------------------------------------------------------ */
+
+.tx-table .tx-actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.btn-edit {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-edit:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+}
+
+/* Gap between the Edit link and the Delete button in the Actions cell */
+.tx-actions form { margin-left: 0.4rem; }

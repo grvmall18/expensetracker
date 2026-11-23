@@ -17,6 +17,19 @@ from database.db import get_db
 
 NO_CATEGORY = "—"
 
+# SQLite integers are 8 bytes. A Python int outside this range cannot be bound
+# as a query parameter (sqlite3 raises OverflowError), and no row can have such
+# an id, so the helpers below treat it as "not found" without touching the
+# database. The URL converter accepts numbers of any length, so a visitor can
+# reach this with a long enough id.
+_SQLITE_MIN_INT = -(2**63)
+_SQLITE_MAX_INT = 2**63 - 1
+
+
+def _is_possible_row_id(value):
+    """True if value can be bound as a SQLite INTEGER, so a row could have it."""
+    return _SQLITE_MIN_INT <= value <= _SQLITE_MAX_INT
+
 
 def _date_filter(date_from, date_to):
     """Return (sql_fragment, params) narrowing expenses to a date range.
@@ -171,8 +184,11 @@ def get_expense_by_id(expense_id, user_id):
     """Return one expense as a dict, or None.
 
     The query is scoped to the owner, so an expense that does not exist and an
-    expense that belongs to someone else look exactly the same: None.
+    expense that belongs to someone else look exactly the same: None. So does an
+    id too large for SQLite to store.
     """
+    if not _is_possible_row_id(expense_id):
+        return None
     conn = get_db()
     try:
         row = conn.execute(
@@ -201,8 +217,11 @@ def update_expense(expense_id, user_id, amount, category, date, description):
     The WHERE clause names the owner as well as the expense, as a second
     ownership guard: for someone else's expense nothing changes and 0 is
     returned. Only the four editable columns are written, so user_id and
-    created_at never change. The caller validates the values first.
+    created_at never change. The caller validates the values first. An id too
+    large for SQLite to store matches nothing, so 0 is returned.
     """
+    if not _is_possible_row_id(expense_id):
+        return 0
     conn = get_db()
     try:
         cursor = conn.execute(
@@ -221,8 +240,11 @@ def delete_expense(expense_id, user_id):
 
     The WHERE clause names the owner as well as the expense, as a second
     ownership guard: for someone else's expense, or one that does not exist,
-    nothing is deleted and 0 is returned. Deletion cannot be undone.
+    nothing is deleted and 0 is returned, as it is for an id too large for
+    SQLite to store. Deletion cannot be undone.
     """
+    if not _is_possible_row_id(expense_id):
+        return 0
     conn = get_db()
     try:
         cursor = conn.execute(

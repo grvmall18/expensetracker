@@ -171,6 +171,28 @@ def test_unusable_ids_are_a_404(client, login, owner, path):
     assert client.get(path).status_code == 404
 
 
+OVERSIZED_IDS = ["9" * 20, str(2**63), "9" * 40]
+
+
+@pytest.mark.parametrize("big_id", OVERSIZED_IDS)
+@pytest.mark.parametrize("method", ["get", "post"])
+def test_an_id_too_large_for_sqlite_is_a_404_not_a_server_error(client, login, owner, method, big_id):
+    """SQLite integers are 8 bytes. A larger id cannot match any row, so it is a plain 404."""
+    login(owner)
+    response = getattr(client, method)(f"/expenses/{big_id}/edit", data=NEW_VALUES if method == "post" else None)
+    assert response.status_code == 404
+
+
+def test_the_largest_id_sqlite_can_hold_is_a_normal_404(client, login, owner):
+    login(owner)
+    assert client.get(f"/expenses/{2**63 - 1}/edit").status_code == 404
+
+
+def test_helpers_treat_an_oversized_id_as_not_found(owner):
+    assert get_expense_by_id(2**63, owner) is None
+    assert update_expense(2**63, owner, 1.0, "Food", "2026-03-01", None) == 0
+
+
 @pytest.mark.parametrize("method", ["get", "post"])
 def test_a_session_for_a_deleted_user_gets_404_not_a_server_error(client, login, expense_id, method):
     login(99999)

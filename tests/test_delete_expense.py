@@ -117,6 +117,24 @@ def test_unusable_ids_are_a_404(client, login, owner, path):
     assert client.post(path).status_code == 404
 
 
+@pytest.mark.parametrize("big_id", ["9" * 20, str(2**63), "9" * 40])
+def test_an_id_too_large_for_sqlite_is_a_404_not_a_server_error(client, login, owner, big_id):
+    """SQLite integers are 8 bytes. A larger id cannot match any row, so it is a plain 404."""
+    login(owner)
+    assert client.post(f"/expenses/{big_id}/delete").status_code == 404
+
+
+def test_the_largest_id_sqlite_can_hold_is_a_normal_404(client, login, owner):
+    login(owner)
+    assert client.post(f"/expenses/{2**63 - 1}/delete").status_code == 404
+
+
+def test_delete_expense_treats_an_oversized_id_as_not_found(owner, expense_id):
+    before = total_rows()
+    assert delete_expense(2**63, owner) == 0
+    assert total_rows() == before
+
+
 def test_a_session_for_a_deleted_user_gets_404_not_a_server_error(client, login, expense_id):
     login(99999)
     assert client.post(f"/expenses/{expense_id}/delete").status_code == 404
